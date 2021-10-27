@@ -1,15 +1,15 @@
-import {images, game} from "../constant.js";
-import {bullets} from "../Bullet/bullet.js";
-import {PeaBullet} from "../Bullet/pea_bullet.js";
+import {images, game} from "../common/game.js";
+import {PeaBullet} from "./bullet.js";
 
 export let plants = [];
 
 export class Plant {
-    constructor(img, row, col, playInterval, attackInterval) {
+    constructor(img, row, col, playInterval, attackInterval, width, offset) {
         this.img = img;
         this.imgIdx = 0;
-        this.width = this.img[0].width;
+        this.width = width;
         this.height = this.img[0].height;
+        this.offset = offset;
         this.x = 255 + 82 * row;
         this.y = 90 + 100 * col;
         this.row = row;
@@ -22,10 +22,10 @@ export class Plant {
         this.attackIntervalSave = attackInterval;
     }
 
-    attack() {
+    attack(bullet) {
         this.attackInterval -= game.FRAME_TIME;
         if(this.attackInterval < 0) {
-            bullets.push(new PeaBullet(this.x, this.y, this.col))
+            game.bullets.push(bullet);
             this.attackInterval = this.attackIntervalSave;
         }
     }
@@ -46,4 +46,23 @@ export class Plant {
     hurt(damage) {
         this.life -= damage;
     }
+}
+
+export class Pea extends Plant {
+    constructor(row, col) {
+        // (img, row, col, playInterval, attackInterval
+        super(images.plant.pea.img, row, col, 70, 1000, 61, 0)
+    }
+    action() {
+        // game.drawRect(this.x + this.offset, this.y, this.width, 61);
+        if(this.life <= 0) {
+            this.isDestroy = true;
+        }
+        this.attack(new PeaBullet(this.x, this.y, this.col));
+        this.draw();
+    }
+}
+
+export class Corn extends Plant {
+    
 }

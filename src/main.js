@@ -1,56 +1,48 @@
-import {game, images, card, price} from "./constant.js";
-import {Sun, sun} from "./Sun/sun.js";
-import {zombie, Zombie} from "./zombie/zombie.js";
-import {Pea} from "./Plant/pea_shooter.js";
-import {plants} from "./Plant/plant.js";
-import {getPointOnCanvas, collision} from "./tools.js";
-import {bullets} from "./Bullet/bullet.js";
+import {game, images, card} from "./common/game.js";
+import {mapInit} from "./init/map_init.js";
+import {startPlantSelect} from "./init/start_plant_select.js";
+import {startMenu} from "./init/start_menu.js"
+import {collision} from "./common/tools.js";
+import {createSun} from "./sun/sun.js";
 
-function addObject(arr, type) {
-    if (arr.lastTime < 0) {
-        arr.lastTime = arr.interval;
-        arr.count.push(type);
-    } else arr.lastTime -= game.FRAME_TIME;
+function init() {
+    startMenu();
+    startPlantSelect();
+    mapInit();
 }
-
-function create() {
-    addObject(sun, new Sun())
-    addObject(zombie, new Zombie())
-}
-
-let selectSeed = 0;
-let point = {x: 0, y: 0}
 
 function action() {
+    createSun();
     // draw background
     game.draw(images.background.grass, 0, 0)
 
     // draw sun
     game.draw(images.sunBank, 15, 10)
-    game.write(sun.total, 28, 90);
+    game.write(game.sun, 28, 90);
 
-    if (selectSeed != 0) {
-        game.draw(images.plant.pea.img[0], point.x - 35, point.y - 45);
+    if (game.plantCode != 0) {
+        // TODO 应该根据选择植物来更改画的图片
+        game.draw(images.plant.pea.img[0], game.cursor.x - 35, game.cursor.y - 45);
     }
 
     // plant
-    for (let i = 0; i < plants.length; ++i) {
-        plants[i].action();
+    for (let i = 0; i < game.plants.length; ++i) {
+        game.plants[i].action();
     }
 
     // zombie
-    for (let i = 0; i < zombie.count.length; ++i) {
-        zombie.count[i].action();
+    for (let i = 0; i < game.zombies.length; ++i) {
+        game.zombies[i].action();
     }
 
     // bullet
-    for (let i = 0; i < bullets.length; ++i) {
-        bullets[i].action();
+    for (let i = 0; i < game.bullets.length; ++i) {
+        game.bullets[i].action();
     }
 
     // sun
-    for (let i = 0; i < sun.count.length; ++i) {
-        sun.count[i].action();
+    for (let i = 0; i < game.suns.length; ++i) {
+        game.suns[i].action();
     }
 
     // draw card
@@ -67,92 +59,40 @@ function action() {
 
 function destroy() {
     // sun
-    for (let i = 0; i < sun.count.length; ++i) {
-        if (sun.count[i].isDestroy) {
-            sun.count.splice(i, 1);
+    for (let i = 0; i < game.suns.length; ++i) {
+        if (game.suns[i].isDestroy) {
+            game.suns.splice(i, 1);
         }
     }
     // zombie
-    for (let i = 0; i < zombie.count.length; ++i) {
-        if (zombie.count[i].isDestroy) {
-            zombie.count.splice(i, 1);
+    for (let i = 0; i < game.zombies.length; ++i) {
+        if (game.zombies[i].isDestroy) {
+            game.zombies.splice(i, 1);
         }
     }
     // plant
-    for (let i = 0; i < plants.length; ++i) {
-        if (plants[i].isDestroy) {
-            plants.splice(i, 1);
+    for (let i = 0; i < game.plants.length; ++i) {
+        if (game.plants[i].isDestroy) {
+            game.plants.splice(i, 1);
         }
     }
     // bullet
-    for (let i = 0; i < bullets.length; ++i) {
-        if (bullets[i].isDestroy) {
-            bullets.splice(i, 1);
+    for (let i = 0; i < game.bullets.length; ++i) {
+        if (game.bullets[i].isDestroy) {
+            game.bullets.splice(i, 1);
         }
     }
-}
-
-function seedChoose(x, y) {
-    if (collision(card._1.x, card._1.y, card.width, card.height, x, y, 1, 1))
-        return 1;
-    if (collision(card._2.x, card._2.y, card.width, card.height, x, y, 1, 1))
-        return 2;
-    if (collision(card._3.x, card._3.y, card.width, card.height, x, y, 1, 1))
-        return 3;
-    if (collision(card._4.x, card._4.y, card.width, card.height, x, y, 1, 1))
-        return 4;
-    if (collision(card._5.x, card._5.y, card.width, card.height, x, y, 1, 1))
-        return 5;
-    if (collision(card._6.x, card._6.y, card.width, card.height, x, y, 1, 1))
-        return 6;
-    if (collision(card._7.x, card._7.y, card.width, card.height, x, y, 1, 1))
-        return 7;
-    if (collision(card._8.x, card._8.y, card.width, card.height, x, y, 1, 1))
-        return 8;
-    if (collision(card._9.x, card._9.y, card.width, card.height, x, y, 1, 1))
-        return 9;
-    return 0;
-}
-
-document.getElementById("canvas").onclick = (k) => {
-    let p = getPointOnCanvas(k.x, k.y);
-    // sun
-    for (let i = 0; i < sun.count.length; ++i) {
-        let o = sun.count[i];
-        if (collision(o.x, o.y, o.width, o.height, p.x, p.y, 1, 1)) {
-            o.isDestroy = true;
-            sun.total += price.sun;
-            return 0;
-        }
-    }
-    if (collision(card._1.x, card._1.y, 530, card.height, p.x, p.y, 1, 1)) {
-        selectSeed = seedChoose(p.x, p.y);
-    }
-    // seed pea shooter
-    if (selectSeed != 0 && collision(255, 80, 720, 485, p.x, p.y, 1, 1)) {
-        let row = parseInt((975 - p.x) / 80);
-        let col = parseInt((565 - p.y) / 93);
-        plants.push(new Pea(Math.abs(row - 8), Math.abs(col - 4)));
-        sun.total -= price.pea;
-        selectSeed = 0;
-    }
-}
-
-document.getElementById("canvas").onmousemove = (k) => {
-    point = getPointOnCanvas(k.x, k.y);
 }
 
 function main() {
     game.setPen(25, "black");
+    init();
     setInterval(() => {
-
-        create();
-
         action();
-
         destroy();
-
     }, game.FRAME_TIME);
 }
 
-main();
+window.onload = () => {
+    main();
+}

@@ -1,4 +1,4 @@
-import {game} from "./constant.js"
+import {game} from "./game.js"
 
 export let imageFromPath = function (path) {
     let img = new Image()
@@ -22,6 +22,11 @@ export function collision(ax, ay, aw, ah, bx, by, bw, bh) {
         }
     }
     return false;
+}
+
+export function colCollision(ax, aw, bx, bw) {
+    return ax + aw > bx && ax < bx + bw;
+
 }
 
 export function getPointOnCanvas(x, y) {

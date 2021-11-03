@@ -8,7 +8,7 @@ const STATUS = {
 }
 
 class Zombie {
-    constructor(img, col, life, speed, damage, width, offset) {
+    constructor(img, col, life, speed, damage, width, offset, playInterval) {
         this.status = STATUS.WALK;
         this.img = () => {
             switch (this.status) {
@@ -27,28 +27,43 @@ class Zombie {
         this.width = width;
         this.offset = offset;
         this.isDestroy = false;
-        this.playInterval = 80;
+        this.playInterval = playInterval;
+        this.playIntervalSave = playInterval;
         this.life = life;
         this.x = 800;
         this.y = col * 100 + 20
         this.col = col;
         this.speed = speed;
         this.damage = damage;
+        this.test1 = "";
+        this.test2 = "";
     }
 
     frame() {
+        // TODO 状态不一致
+        // this.status = 2
+        this.test1 = this.status
         if (this.playInterval < 0) {
+            // this.status = 1
+            this.test2 = this.status;
             this.imgIdx = (this.imgIdx + 1) % this.img().length;
-            this.playInterval = 80;
+            this.playInterval = this.playIntervalSave;
         }
         this.playInterval -= game.FRAME_TIME;
     }
 
     draw() {
+        this.frame();
         if (this.status == STATUS.DIE) {
             // TODO die animation
-        } else game.draw(this.img()[this.imgIdx], this.x, this.y);
-        this.frame();
+        } else {
+            // TODO 状态切换问题导致 index out exception
+            try {
+                game.draw(this.img()[this.imgIdx], this.x, this.y);
+            } catch (e) {
+                console.log("status", this.test1, this.test2);
+            }
+        }
     }
 
     move() {
@@ -77,7 +92,7 @@ class Zombie {
 export class NormalZombie extends Zombie {
     constructor(col) {
         // img, col, life, speed, damage, width, offset
-        super(images.zombie.normal, col, 100, 20, 50, 60, 80);
+        super(images.zombie.normal, col, 100, 20, 50, 60, 80, 80);
     }
 
     hurt(damage) {

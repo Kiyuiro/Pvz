@@ -6,6 +6,7 @@ const ctx = canvas.getContext("2d");
 export const CODE = {
     PEA: 1,
     CORN: 2,
+    SUNFLOWER: 3,
 }
 
 export let game = {
@@ -14,7 +15,10 @@ export let game = {
     canvas: canvas,
     WIDTH: 1400,
     HEIGHT: 600,
-    plantCode: 0,
+    selectPlant: {
+        code: 0,
+        card: "img",
+    },
     plants: [],
     bullets: [],
     zombies: [],
@@ -51,7 +55,11 @@ export const images = {
             card: imageFromPath("./resource/images/Plants/pea/card.png"),
             icon: imageFromPath("./resource/images/Plants/pea/icon.png"),
         },
-        seedChooser: imageFromPath("./resource/images/SeedChooser_Background.png"),
+        sun_flower: {
+            img: imageLoad("./resource/images/Plants/sun_flower/", 18),
+            card: imageFromPath("./resource/images/Plants/sun_flower/card.png"),
+            icon: imageFromPath("./resource/images/Plants/sun_flower/icon.png"),
+        }
     },
     zombie: {
         normal: {
@@ -68,7 +76,7 @@ export const images = {
 }
 
 export const card = {
-    _1: {x: 105, y: 10, code: CODE.PEA},
+    _1: {x: 105, y: 10, code: CODE.SUNFLOWER},
     _2: {x: 165, y: 10, code: CODE.PEA},
     _3: {x: 225, y: 10, code: CODE.PEA},
     _4: {x: 285, y: 10, code: CODE.PEA},
@@ -83,5 +91,5 @@ export const card = {
 
 export const PLANTPRICE = {
     PEA: 100,
-    CORN: 100,
+    SUNFLOWER: 50,
 }

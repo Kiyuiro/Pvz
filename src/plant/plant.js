@@ -1,5 +1,5 @@
 import {images, game} from "../common/game.js";
-import {PeaBullet} from "./bullet.js";
+import {PeaBullet, Sun} from "./bullet.js";
 
 export let plants = [];
 
@@ -24,7 +24,7 @@ export class Plant {
 
     attack(bullet) {
         this.attackInterval -= game.FRAME_TIME;
-        if(this.attackInterval < 0) {
+        if (this.attackInterval < 0) {
             game.bullets.push(bullet);
             this.attackInterval = this.attackIntervalSave;
         }
@@ -32,7 +32,7 @@ export class Plant {
 
     frame() {
         this.playInterval -= game.FRAME_TIME;
-        if(this.playInterval < 0) {
+        if (this.playInterval < 0) {
             this.imgIdx = (this.imgIdx + 1) % this.img.length;
             this.playInterval = this.playIntervalSave;
         }
@@ -48,14 +48,37 @@ export class Plant {
     }
 }
 
-export class Pea extends Plant {
+export class SunFlower extends Plant {
     constructor(row, col) {
-        // (img, row, col, playInterval, attackInterval
-        super(images.plant.pea.img, row, col, 70, 1000, 61, 0)
+        super(images.plant.sun_flower.img, row, col, 70, 5000, 61, 0)
     }
+
+    attack(bullet) {
+        this.attackInterval -= game.FRAME_TIME;
+        if (this.attackInterval < 0) {
+            game.suns.push(bullet);
+            this.attackInterval = this.attackIntervalSave;
+        }
+    }
+
     action() {
         // game.drawRect(this.x + this.offset, this.y, this.width, 61);
-        if(this.life <= 0) {
+        if (this.life <= 0) {
+            this.isDestroy = true;
+        }
+        this.attack(new Sun(this.x, this.y));
+        this.draw();
+    }
+}
+
+export class Pea extends Plant {
+    constructor(row, col) {
+        super(images.plant.pea.img, row, col, 70, 1000, 61, 0)
+    }
+
+    action() {
+        // game.drawRect(this.x + this.offset, this.y, this.width, 61);
+        if (this.life <= 0) {
             this.isDestroy = true;
         }
         this.attack(new PeaBullet(this.x, this.y, this.col));
@@ -64,5 +87,5 @@ export class Pea extends Plant {
 }
 
 export class Corn extends Plant {
-    
+
 }

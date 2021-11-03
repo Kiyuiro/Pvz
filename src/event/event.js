@@ -10,12 +10,13 @@ addEventListener("mousemove", (k) => {
 addEventListener("click", () => {
     pickUpSun(game.cursor.x, game.cursor.y);
 
-    if(collision(card._1.x, card._1.y, 530, card.height, game.cursor.x, game.cursor.y, 1, 1)) {
-        if(game.plantCode != 0) game.plantCode = 0;
+    // 判断鼠标是否在卡槽上
+    if (collision(card._1.x, card._1.y, 530, card.height, game.cursor.x, game.cursor.y, 1, 1)) {
+        if (game.selectPlant.code != 0) game.selectPlant.code = 0;
         else setPlantCode(game.cursor.x, game.cursor.y);
     }
 
-    if (game.plantCode != 0 && collision(255, 80, 720, 485, game.cursor.x, game.cursor.y, 1, 1)) {
+    if (game.selectPlant.code != 0 && collision(255, 80, 720, 485, game.cursor.x, game.cursor.y, 1, 1)) {
         plant(game.cursor.x, game.cursor.y);
     }
 
@@ -23,7 +24,7 @@ addEventListener("click", () => {
 
 // test function
 function creatZombie(col) {
-    if(col > 0 && col < 6) {
+    if (col > 0 && col < 6) {
         game.zombies.push(new NormalZombie(col - 1));
     }
 }

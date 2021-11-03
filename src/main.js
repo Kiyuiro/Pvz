@@ -6,6 +6,7 @@ import {collision} from "./common/tools.js";
 import {createSun} from "./sun/sun.js";
 
 function init() {
+    game.setPen(25, "black");
     startMenu();
     startPlantSelect();
     mapInit();
@@ -16,13 +17,25 @@ function action() {
     // draw background
     game.draw(images.background.grass, 0, 0)
 
+    // draw card
+    // TODO 自适应图片
+    game.draw(images.plant.sun_flower.card, card._1.x, card._1.y)
+    game.draw(images.plant.pea.card, card._2.x, card._2.y)
+    game.draw(images.plant.pea.card, card._3.x, card._3.y)
+    game.draw(images.plant.pea.card, card._4.x, card._4.y)
+    game.draw(images.plant.pea.card, card._5.x, card._5.y)
+    game.draw(images.plant.pea.card, card._6.x, card._6.y)
+    game.draw(images.plant.pea.card, card._7.x, card._7.y)
+    game.draw(images.plant.pea.card, card._8.x, card._8.y)
+    game.draw(images.plant.pea.card, card._9.x, card._9.y)
+
     // draw sun
     game.draw(images.sunBank, 15, 10)
     game.write(game.sun, 28, 90);
 
-    if (game.plantCode != 0) {
+    if (game.selectPlant.code != 0) {
         // TODO 应该根据选择植物来更改画的图片
-        game.draw(images.plant.pea.img[0], game.cursor.x - 35, game.cursor.y - 45);
+        game.draw(game.selectPlant.card, game.cursor.x - 35, game.cursor.y - 45);
     }
 
     // plant
@@ -44,17 +57,6 @@ function action() {
     for (let i = 0; i < game.suns.length; ++i) {
         game.suns[i].action();
     }
-
-    // draw card
-    game.draw(images.plant.pea.card, card._1.x, card._1.y)
-    game.draw(images.plant.pea.card, card._2.x, card._2.y)
-    game.draw(images.plant.pea.card, card._3.x, card._3.y)
-    game.draw(images.plant.pea.card, card._4.x, card._4.y)
-    game.draw(images.plant.pea.card, card._5.x, card._5.y)
-    game.draw(images.plant.pea.card, card._6.x, card._6.y)
-    game.draw(images.plant.pea.card, card._7.x, card._7.y)
-    game.draw(images.plant.pea.card, card._8.x, card._8.y)
-    game.draw(images.plant.pea.card, card._9.x, card._9.y)
 }
 
 function destroy() {
@@ -85,7 +87,6 @@ function destroy() {
 }
 
 function main() {
-    game.setPen(25, "black");
     init();
     setInterval(() => {
         action();
